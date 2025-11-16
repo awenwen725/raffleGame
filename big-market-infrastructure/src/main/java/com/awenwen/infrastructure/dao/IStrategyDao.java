@@ -1,6 +1,7 @@
 package com.awenwen.infrastructure.dao;
 
 import com.awenwen.infrastructure.dao.po.Strategy;
+import com.awenwen.infrastructure.dao.po.StrategyAward;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -13,4 +14,6 @@ import java.util.List;
 @Mapper
 public interface IStrategyDao {
     List<Strategy> queryStrategyList();
+
+    List<StrategyAward> queryStrategyListByStrategyId(Long strategyId);
 }
