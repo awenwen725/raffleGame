@@ -22,8 +22,9 @@ public class Strategy {
      * 抽奖策略描述
      */
     private String strategyDesc;
+
     /** 规则模型，rule配置的模型同步到此表，便于使用*/
-    private String rule_models;
+    private String ruleModels;
 
     /**
      * 创建时间

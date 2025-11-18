@@ -1,8 +1,12 @@
 package com.awenwen.domain.strategy.service.armory;
 
 import com.awenwen.domain.strategy.model.entity.StrategyAwardEntity;
+import com.awenwen.domain.strategy.model.entity.StrategyEntity;
+import com.awenwen.domain.strategy.model.entity.StrategyRuleEntity;
 import com.awenwen.domain.strategy.repository.IStrategyRepository;
 import com.awenwen.types.common.Constants;
+import com.awenwen.types.enums.ResponseCode;
+import com.awenwen.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +14,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author awenwen
@@ -22,7 +23,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class StrategyArmory implements IStrategyArmory {
+public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatch {
     @Resource
     private IStrategyRepository repository;
 
@@ -32,7 +33,34 @@ public class StrategyArmory implements IStrategyArmory {
     public boolean assembleLotteryStrategy(Long strategyId) {
         // 1. query the strategy configuration
         List<StrategyAwardEntity> strategyAwardEntities = repository.queryStrategyAwardList(strategyId);
+        assembleLotteryStrategy(String.valueOf(strategyId), strategyAwardEntities);
+        // 2. lottery weight configuration
+        StrategyEntity strategyEntity = repository.queryStrategyEntityByStrategyId(strategyId);
+        String ruleWeight = strategyEntity.getRuleWeight();
+        if (null == ruleWeight) {
+            return true;
+        }
 
+        // 3. parse the strategy rule
+        StrategyRuleEntity strategyRuleEntity = repository.queryStrategyRule(strategyId, ruleWeight);
+        if (null == strategyRuleEntity) {
+            throw new AppException(ResponseCode.STRATEGY_RULE_WEIGHT_IS_NULL.getCode(),
+                    ResponseCode.STRATEGY_RULE_WEIGHT_IS_NULL.getInfo());
+        }
+
+        // assemble for each weight strategy
+        Map<String, List<Integer>> ruleWeightValueMap = strategyRuleEntity.getRuleWeightValues();
+        for (String WeightRule : ruleWeightValueMap.keySet()) {
+            List<Integer> ruleWeightValue = ruleWeightValueMap.get(WeightRule);
+            ArrayList<StrategyAwardEntity> strategyAwardListEntitiesClone = new ArrayList<>(strategyAwardEntities);
+            strategyAwardListEntitiesClone.removeIf(entity -> !ruleWeightValue.contains(entity.getAwardId()));
+            assembleLotteryStrategy(String.valueOf(strategyId).concat(Constants.UNDERLINE).concat(WeightRule), strategyAwardListEntitiesClone);
+        }
+
+        return true;
+    }
+
+    private void assembleLotteryStrategy(String key, List<StrategyAwardEntity> strategyAwardEntities) {
         // 2.acquire minimum probability
         BigDecimal minAwardRate = strategyAwardEntities.stream()
                 .map(StrategyAwardEntity::getAwardRate)
@@ -54,10 +82,10 @@ public class StrategyArmory implements IStrategyArmory {
 
             // calculate the number bits takes for each award
             for (int i = 0;
-                    i < rateRange.multiply(awardRate)
+                 i < rateRange.multiply(awardRate)
                          .setScale(0, RoundingMode.CEILING).intValue();
-                    i++
-                ) {
+                 i++
+            ) {
                 strategyAwardSearchRateTable.add(awardId);
             }
         }
@@ -72,18 +100,26 @@ public class StrategyArmory implements IStrategyArmory {
         }
 
         // 7. add to redis
-        repository.storeStrategyAwardSearchRateTable(strategyId, shuffledStrategyAwardSearchRateTable.size(), shuffledStrategyAwardSearchRateTable);
+        repository.storeStrategyAwardSearchRateTable(key, shuffledStrategyAwardSearchRateTable.size(), shuffledStrategyAwardSearchRateTable);
 
-        //
-        return true;
     }
 
     @Override
     public Integer getRandomAwardId(Long strategyId) {
         int rateRange = repository.getRateRange(strategyId);
 
-        return repository.getStrategyAwardAssemble(strategyId, new SecureRandom().nextInt(rateRange));
+        return repository.getStrategyAwardAssemble(String.valueOf(strategyId), new SecureRandom().nextInt(rateRange));
     }
+
+    @Override
+    public Integer getRandomAwardId(Long strategyId, String ruleWeightValue) {
+        String key = String.valueOf(strategyId).concat(Constants.UNDERLINE).concat(ruleWeightValue);
+        int rateRange = repository.getRateRange(key);
+
+        return repository.getStrategyAwardAssemble(key, new SecureRandom().nextInt(rateRange));
+    }
+
+
 
 
 }

@@ -22,24 +22,23 @@ public class StrategyEntity {
     /** 抽奖策略描述 */
     private String strategyDesc;
     /** 规则模型，rule配置的模型同步到此表，便于使用*/
-    private String rule_models;
+    private String ruleModels;
 
+    /** 适用于 rule_weight 权重规则配置
+     * 【4000:102,103,104,105
+     * 5000:102,103,104,105,106,107
+     * 6000:102,103,104,105,106,107,108,109】
+     * */
     public String[] ruleModels() {
-        if (StringUtils.isEmpty(rule_models)) {
-            return null;
-        }
-        return rule_models.split(Constants.SPLIT);
+        if (StringUtils.isBlank(ruleModels)) return null;
+        return ruleModels.split(Constants.SPLIT);
     }
 
     public String getRuleWeight() {
         String[] ruleModels = this.ruleModels();
-        if (StringUtils.isEmpty(rule_models)) {
-            return null;
-        }
+        if (null == ruleModels) return null;
         for (String ruleModel : ruleModels) {
-            if("rule_weight".equals(ruleModel)) {
-                return ruleModel;
-            }
+            if ("rule_weight".equals(ruleModel)) return ruleModel;
         }
         return null;
     }

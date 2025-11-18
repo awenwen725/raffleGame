@@ -1,12 +1,18 @@
 package com.awenwen.infrastructure.adapter.repository;
 
 import com.awenwen.domain.strategy.model.entity.StrategyAwardEntity;
+import com.awenwen.domain.strategy.model.entity.StrategyEntity;
+import com.awenwen.domain.strategy.model.entity.StrategyRuleEntity;
 import com.awenwen.domain.strategy.repository.IStrategyRepository;
 import com.awenwen.infrastructure.dao.IStrategyAwardDao;
 import com.awenwen.infrastructure.dao.IStrategyDao;
+import com.awenwen.infrastructure.dao.IStrategyRuleDao;
+import com.awenwen.infrastructure.dao.po.Strategy;
 import com.awenwen.infrastructure.dao.po.StrategyAward;
+import com.awenwen.infrastructure.dao.po.StrategyRule;
 import com.awenwen.infrastructure.redis.IRedisService;
 import com.awenwen.types.common.Constants;
+import com.awenwen.types.exception.AppException;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -15,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import static com.awenwen.types.enums.ResponseCode.UN_ASSEMBLED_STRATEGY_ARMORY;
 
 /**
  * @author awenwen
@@ -28,6 +36,12 @@ public class StrategyRepository implements IStrategyRepository {
 
     @Resource
     private IRedisService redisService;
+
+    @Resource
+    private IStrategyDao strategyDao;
+
+    @Resource
+    private IStrategyRuleDao strategyRuleDao;
 
     @Override
     public List<StrategyAwardEntity> queryStrategyAwardList(Long strategyId) {
@@ -77,7 +91,7 @@ public class StrategyRepository implements IStrategyRepository {
      *           after putting key-value, the value will be lazily putted into redis
      */
     @Override
-    public <K, V> void storeStrategyAwardSearchRateTable(Long key, Integer rateRange, Map<K, V> strategyAwardSearchRateTable) {
+    public <K, V> void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<K, V> strategyAwardSearchRateTable) {
         // 1. store the range of random number
         redisService.setValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + key, rateRange);
 
@@ -88,11 +102,57 @@ public class StrategyRepository implements IStrategyRepository {
 
     @Override
     public int getRateRange(Long strategyId) {
-        return redisService.getValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + strategyId);
+        return getRateRange(String.valueOf(strategyId));
     }
 
     @Override
-    public Integer getStrategyAwardAssemble(Long strategyId, int rateKey) {
-        return redisService.getFromMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + strategyId, rateKey);
+    public int getRateRange(String key) {
+        return redisService.getValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + key);
+    }
+
+    @Override
+    public Integer getStrategyAwardAssemble(String key, int rateKey) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_LIST_KEY + key;
+        if (!redisService.isExists(cacheKey)) {
+            throw new AppException(UN_ASSEMBLED_STRATEGY_ARMORY.getCode(), cacheKey + Constants.COLON + UN_ASSEMBLED_STRATEGY_ARMORY.getInfo());
+        }
+        return redisService.getFromMap(cacheKey, rateKey);
+    }
+
+    @Override
+    public StrategyEntity queryStrategyEntityByStrategyId(Long strategyId) {
+        // acquire from redis
+        String cacheKey = Constants.RedisKey.STRATEGY_KEY + strategyId;
+        StrategyEntity strategyEntity = redisService.getValue(cacheKey);
+        if (null != strategyEntity) {
+            return strategyEntity;
+        }
+        Strategy strategy = strategyDao.queryStrategyByStrategyId(strategyId);
+        if (null == strategy) {
+            return StrategyEntity.builder().build();
+        }
+        strategyEntity = StrategyEntity.builder()
+                .strategyId(strategy.getStrategyId())
+                .strategyDesc(strategy.getStrategyDesc())
+                .ruleModels(strategy.getRuleModels())
+                .build();
+        return strategyEntity;
+    }
+
+    @Override
+    public StrategyRuleEntity queryStrategyRule(Long strategyId, String ruleWeight) {
+        StrategyRule strategyRuleReq = new StrategyRule();
+        strategyRuleReq.setStrategyId(strategyId);
+        strategyRuleReq.setRuleModel(ruleWeight);
+        StrategyRule strategyRuleRes = strategyRuleDao.queryStrategyRule(strategyRuleReq);
+        if (null == strategyRuleRes) return null;
+        return StrategyRuleEntity.builder()
+                .strategyId(strategyRuleRes.getStrategyId())
+                .awardId(strategyRuleRes.getAwardId())
+                .ruleType(strategyRuleRes.getRuleType())
+                .ruleModel(strategyRuleRes.getRuleModel())
+                .ruleValue(strategyRuleRes.getRuleValue())
+                .ruleDesc(strategyRuleRes.getRuleDesc())
+                .build();
     }
 }
