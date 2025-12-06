@@ -84,4 +84,11 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy {
         return ruleActionEntity;
 
     }
+
+    @Override
+    protected RuleActionEntity<RuleActionEntity.RaffleCenterEntity> doCheckRaffleCenterLogic(RaffleFactorEntity raffleFactorEntity, String... logics) {
+
+
+        return null;
+    }
 }

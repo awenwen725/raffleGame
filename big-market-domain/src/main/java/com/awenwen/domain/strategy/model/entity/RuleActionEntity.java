@@ -5,8 +5,10 @@ import lombok.*;
 
 /**
  * @author awenwen
- * @description raffle action
- * Define filter class: before, centre, after
+ * @description raffle action states
+ * Define filter class: before (RaffleBeforeEntity),
+ *                      centre (RaffleCenterEntity),
+ *                      after (RaffleAfterEntity)
  * contains states of filter: Allow, Take_over
  * @create 2025/11/18 15:37
  */

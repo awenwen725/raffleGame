@@ -3,6 +3,7 @@ package com.awenwen.infrastructure.adapter.repository;
 import com.awenwen.domain.strategy.model.entity.StrategyAwardEntity;
 import com.awenwen.domain.strategy.model.entity.StrategyEntity;
 import com.awenwen.domain.strategy.model.entity.StrategyRuleEntity;
+import com.awenwen.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 import com.awenwen.domain.strategy.repository.IStrategyRepository;
 import com.awenwen.infrastructure.dao.IStrategyAwardDao;
 import com.awenwen.infrastructure.dao.IStrategyDao;
@@ -163,5 +164,14 @@ public class StrategyRepository implements IStrategyRepository {
         strategyRule.setAwardId(awardId);
         strategyRule.setRuleModel(ruleModel);
         return strategyRuleDao.queryStrategyRuleValue(strategyRule);
+    }
+
+    @Override
+    public StrategyAwardRuleModelVO queryStrategyAwardRuleModelVO(Long strategyId, Integer awardId) {
+        StrategyAward strategyAward = new StrategyAward();
+        strategyAward.setStrategyId(strategyId);
+        strategyAward.setAwardId(awardId);
+        String ruleModels = strategyAwardDao.queryStrategyAwardRuleModels(strategyAward);
+        return StrategyAwardRuleModelVO.builder().ruleModels(ruleModels).build();
     }
 }

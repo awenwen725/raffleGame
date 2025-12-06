@@ -3,6 +3,7 @@ package com.awenwen.domain.strategy.repository;
 import com.awenwen.domain.strategy.model.entity.StrategyAwardEntity;
 import com.awenwen.domain.strategy.model.entity.StrategyEntity;
 import com.awenwen.domain.strategy.model.entity.StrategyRuleEntity;
+import com.awenwen.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -30,4 +31,6 @@ public interface IStrategyRepository {
     StrategyRuleEntity queryStrategyRule(Long strategyId, String ruleWeight);
 
     String queryStrategyRuleValue(Long strategyId, Integer awardId, String ruleModel);
+
+    StrategyAwardRuleModelVO queryStrategyAwardRuleModelVO(Long strategyId, Integer awardId);
 }

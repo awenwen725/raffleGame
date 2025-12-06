@@ -12,8 +12,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum RuleLogicCheckTypeVO {
-    ALLOW("0000", "passed；执行后续的流程，不受规则引擎影响"),
-    TAKE_OVER("0001","take over；后续的流程，受规则引擎执行结果影响"),
+    ALLOW("0000", "passed；perform remain process, do not affected by strategy"),
+    TAKE_OVER("0001","take over；affected by strategy"),
     ;
 
     private final String code;
