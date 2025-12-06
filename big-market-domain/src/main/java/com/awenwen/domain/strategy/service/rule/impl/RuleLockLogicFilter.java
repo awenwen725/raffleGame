@@ -34,7 +34,7 @@ public class RuleLockLogicFilter implements ILogicFilter<RuleActionEntity.Raffle
     public RuleActionEntity<RuleActionEntity.RaffleCenterEntity> filter(RuleMatterEntity ruleMatterEntity) {
         log.info("filter rule: perform times lock,  userId:{} strategyId:{} ruleModel:{}", ruleMatterEntity.getUserId(), ruleMatterEntity.getStrategyId(), ruleMatterEntity.getRuleModel());
 
-        // 查询规则值配置；当前奖品ID，抽奖中规则对应的校验值。如；1、2、6
+        // query the raffle count needed in the system
         String ruleValue = repository.queryStrategyRuleValue(ruleMatterEntity.getStrategyId(), ruleMatterEntity.getAwardId(), ruleMatterEntity.getRuleModel());
         long raffleCount = Long.parseLong(ruleValue);
 
