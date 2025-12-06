@@ -34,14 +34,14 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
         // 1. query the strategy configuration
         List<StrategyAwardEntity> strategyAwardEntities = repository.queryStrategyAwardList(strategyId);
         assembleLotteryStrategy(String.valueOf(strategyId), strategyAwardEntities);
-        // 2. lottery weight configuration
+        // 2. check whether applied weight rule or not
         StrategyEntity strategyEntity = repository.queryStrategyEntityByStrategyId(strategyId);
         String ruleWeight = strategyEntity.getRuleWeight();
         if (null == ruleWeight) {
             return true;
         }
 
-        // 3. parse the strategy rule
+        // 3. parse the rule weight
         StrategyRuleEntity strategyRuleEntity = repository.queryStrategyRule(strategyId, ruleWeight);
         if (null == strategyRuleEntity) {
             throw new AppException(ResponseCode.STRATEGY_RULE_WEIGHT_IS_NULL.getCode(),

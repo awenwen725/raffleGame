@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author awenwen
- * @description
+ * @description raffle or award rules used in strategy
  * @create 2025/11/16 10:59
  */
 @Data
@@ -34,6 +34,10 @@ public class StrategyEntity {
         return ruleModels.split(Constants.SPLIT);
     }
 
+    /**
+     * separate all
+     * @return return ruleWeightList
+     */
     public String getRuleWeight() {
         String[] ruleModels = this.ruleModels();
         if (null == ruleModels) return null;
