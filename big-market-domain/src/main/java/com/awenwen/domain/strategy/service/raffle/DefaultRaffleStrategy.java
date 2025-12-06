@@ -6,6 +6,7 @@ import com.awenwen.domain.strategy.model.entity.RuleMatterEntity;
 import com.awenwen.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
 import com.awenwen.domain.strategy.repository.IStrategyRepository;
 import com.awenwen.domain.strategy.service.armory.IStrategyDispatch;
+import com.awenwen.domain.strategy.service.AbstractRaffleStrategy;
 import com.awenwen.domain.strategy.service.rule.ILogicFilter;
 import com.awenwen.domain.strategy.service.rule.factory.DefaultLogicFactory;
 import lombok.extern.slf4j.Slf4j;
