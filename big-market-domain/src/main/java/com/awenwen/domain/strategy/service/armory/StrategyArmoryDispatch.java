@@ -119,7 +119,13 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
         return repository.getStrategyAwardAssemble(key, new SecureRandom().nextInt(rateRange));
     }
 
+    @Override
+    public Integer getRandomAwardId(String key) {
+        // acquire a range
+        int rateRange = repository.getRateRange(key);
 
+        return repository.getStrategyAwardAssemble(key, new SecureRandom().nextInt(rateRange));
+    }
 
 
 }

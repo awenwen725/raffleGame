@@ -51,7 +51,7 @@ public class StrategyRepository implements IStrategyRepository {
             return strategyAwardEntities;
         }
 
-        // 2. cache missed, read from sql
+        // 2. cache missed, read from database
         List<StrategyAward> strategyAwards = strategyAwardDao.queryStrategyAwardListByStrategyId(strategyId);
         strategyAwardEntities = new ArrayList<>(strategyAwards.size());
 
@@ -80,8 +80,6 @@ public class StrategyRepository implements IStrategyRepository {
      * @param key given key
      * @param rateRange the range of random numbers
      * @param strategyAwardSearchRateTable the map which matches awards with random number
-     * @param <K> key type
-     * @param <V> value type
      * @description
      *           the lottery strategy is to generate a map that matches awards with random number.
      *           in this method, the map will be generated, and stored into Redis.
@@ -90,12 +88,12 @@ public class StrategyRepository implements IStrategyRepository {
      *           after putting key-value, the value will be lazily putted into redis
      */
     @Override
-    public <K, V> void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<K, V> strategyAwardSearchRateTable) {
+    public void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<Integer, Integer> strategyAwardSearchRateTable) {
         // 1. store the range of random number
         redisService.setValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + key, rateRange);
 
         // 2. store the map
-        Map<K, V> cacheRateMap = redisService.getMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key);
+        Map<Integer, Integer> cacheRateMap = redisService.getMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key);
         cacheRateMap.putAll(strategyAwardSearchRateTable);
     }
 

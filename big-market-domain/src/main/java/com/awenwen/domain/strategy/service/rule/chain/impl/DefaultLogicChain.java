@@ -1,0 +1,34 @@
+package com.awenwen.domain.strategy.service.rule.chain.impl;
+
+import com.awenwen.domain.strategy.service.armory.IStrategyDispatch;
+import com.awenwen.domain.strategy.service.rule.chain.AbstractLogicChain;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+
+/**
+ * @author awenwen
+ * @description
+ * @create 2025/12/7 22:13
+ */
+
+@Slf4j
+@Component("default")
+public class DefaultLogicChain extends AbstractLogicChain {
+
+    @Resource
+    protected IStrategyDispatch strategyDispatch;
+
+    @Override
+    public Integer logic(String userId, Long strategyId) {
+        Integer awardId = strategyDispatch.getRandomAwardId(strategyId);
+        log.info("Default Chain take over, userId: {} strategyId: {} ruleModel: {} awardId: {}", userId, strategyId, ruleModel(), awardId);
+        return awardId;
+    }
+
+    @Override
+    protected String ruleModel() {
+        return "default";
+    }
+}
