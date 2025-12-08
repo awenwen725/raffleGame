@@ -52,7 +52,7 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
         // 3. perform logic chain, get award ID
         Integer awardId = logicChain.logic(userId, strategyId);
 
-        // 5. query strategy applied in the middle or end of raffle process
+        // 4. query strategy applied in the middle or end of raffle process
         StrategyAwardRuleModelVO strategyAwardRuleModelVO = repository.queryStrategyAwardRuleModelVO(strategyId, awardId);
 
         // raffling
