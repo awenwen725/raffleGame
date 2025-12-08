@@ -3,12 +3,12 @@ package com.awenwen.domain.strategy.service;
 import com.awenwen.domain.strategy.model.entity.RaffleAwardEntity;
 import com.awenwen.domain.strategy.model.entity.RaffleFactorEntity;
 import com.awenwen.domain.strategy.model.entity.RuleActionEntity;
-import com.awenwen.domain.strategy.model.entity.StrategyEntity;
 import com.awenwen.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
 import com.awenwen.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 import com.awenwen.domain.strategy.repository.IStrategyRepository;
 import com.awenwen.domain.strategy.service.armory.IStrategyDispatch;
-import com.awenwen.domain.strategy.service.rule.factory.DefaultLogicFactory;
+import com.awenwen.domain.strategy.service.rule.chain.ILogicChain;
+import com.awenwen.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
 import com.awenwen.types.enums.ResponseCode;
 import com.awenwen.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +22,17 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
     /** constructor injection */
+    // operation with database
     protected IStrategyRepository repository;
-
+    // perform raffle
     protected IStrategyDispatch strategyDispatch;
+    // perform logic chain
+    private final DefaultChainFactory defaultChainFactory;
 
-    public AbstractRaffleStrategy(IStrategyRepository repository, IStrategyDispatch strategyDispatch) {
+    public AbstractRaffleStrategy(IStrategyRepository repository, IStrategyDispatch strategyDispatch, DefaultChainFactory defaultChainFactory) {
         this.repository = repository;
         this.strategyDispatch = strategyDispatch;
+        this.defaultChainFactory = defaultChainFactory;
     }
 
 
@@ -42,36 +46,11 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
                     ResponseCode.ILLEGAL_PARAMETER.getInfo());
         }
 
-        // 2. query strategy
-        StrategyEntity strategy = repository.queryStrategyEntityByStrategyId(strategyId);
+        // 2. initial logic chain to filter before raffle
+        ILogicChain logicChain = defaultChainFactory.openLogicChain(strategyId);
 
-        // 3. set before raffle filter
-        RuleActionEntity<RuleActionEntity.RaffleBeforeEntity> raffleBeforeEntityRuleActionEntity = this.doCheckRaffleBeforeLogic(
-                RaffleFactorEntity
-                .builder()
-                .userId(userId)
-                .strategyId(strategyId)
-                .build(), strategy.ruleModels());
-        // handle two separate control flow: black list, rule weight
-        if (RuleLogicCheckTypeVO.TAKE_OVER.getCode().equals(raffleBeforeEntityRuleActionEntity.getCode())) {
-            if (DefaultLogicFactory.LogicModel.RULE_BLACKLIST.getCode().equals(raffleBeforeEntityRuleActionEntity.getRuleModel())) {
-                // return fixed award
-                return RaffleAwardEntity.builder()
-                        .awardId(raffleBeforeEntityRuleActionEntity.getData().getAwardId())
-                        .build();
-            } else if (DefaultLogicFactory.LogicModel.RULE_WIGHT.getCode().equals(raffleBeforeEntityRuleActionEntity.getRuleModel())) {
-                // set different
-                RuleActionEntity.RaffleBeforeEntity raffleBeforeEntity = raffleBeforeEntityRuleActionEntity.getData();
-                String ruleWeightValueKey = raffleBeforeEntity.getRuleWeightValueKey();
-                Integer awardId = strategyDispatch.getRandomAwardId(strategyId, ruleWeightValueKey);
-                return RaffleAwardEntity.builder()
-                        .awardId(awardId)
-                        .build();
-            }
-        }
-
-        // 4. if not in two strategy, perform default raffle process
-        Integer awardId = strategyDispatch.getRandomAwardId(strategyId);
+        // 3. perform logic chain, get award ID
+        Integer awardId = logicChain.logic(userId, strategyId);
 
         // 5. query strategy applied in the middle or end of raffle process
         StrategyAwardRuleModelVO strategyAwardRuleModelVO = repository.queryStrategyAwardRuleModelVO(strategyId, awardId);
@@ -96,8 +75,6 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
                 .awardId(awardId)
                 .build();
     }
-
-    protected abstract RuleActionEntity<RuleActionEntity.RaffleBeforeEntity> doCheckRaffleBeforeLogic(RaffleFactorEntity raffleFactorEntity, String... logics);
 
     protected abstract RuleActionEntity<RuleActionEntity.RaffleCenterEntity> doCheckRaffleCenterLogic(RaffleFactorEntity raffleFactorEntity, String... logics);
 }

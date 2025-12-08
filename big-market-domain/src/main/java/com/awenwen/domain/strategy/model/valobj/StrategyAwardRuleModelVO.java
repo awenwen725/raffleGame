@@ -1,6 +1,6 @@
 package com.awenwen.domain.strategy.model.valobj;
 
-import com.awenwen.domain.strategy.service.rule.factory.DefaultLogicFactory;
+import com.awenwen.domain.strategy.service.rule.filter.factory.DefaultLogicFactory;
 import com.awenwen.types.common.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

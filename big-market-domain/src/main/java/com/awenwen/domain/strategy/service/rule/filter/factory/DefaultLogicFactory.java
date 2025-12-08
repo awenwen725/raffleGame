@@ -1,8 +1,8 @@
-package com.awenwen.domain.strategy.service.rule.factory;
+package com.awenwen.domain.strategy.service.rule.filter.factory;
 
 import com.awenwen.domain.strategy.model.entity.RuleActionEntity;
 import com.awenwen.domain.strategy.service.annotation.LogicStrategy;
-import com.awenwen.domain.strategy.service.rule.ILogicFilter;
+import com.awenwen.domain.strategy.service.rule.filter.ILogicFilter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.core.annotation.AnnotationUtils;

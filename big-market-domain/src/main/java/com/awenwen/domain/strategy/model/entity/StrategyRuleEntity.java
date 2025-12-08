@@ -13,7 +13,8 @@ import java.util.Map;
 
 /**
  * @author awenwen
- * @description
+ * @description according to schema StrategyRule
+ * describe the precise information of rule
  * @create 2025/11/17 21:25
  */
 @Data

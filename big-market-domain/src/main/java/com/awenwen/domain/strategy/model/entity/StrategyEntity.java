@@ -24,10 +24,8 @@ public class StrategyEntity {
     /** 规则模型，rule配置的模型同步到此表，便于使用*/
     private String ruleModels;
 
-    /** 适用于 rule_weight 权重规则配置
-     * 【4000:102,103,104,105
-     * 5000:102,103,104,105,106,107
-     * 6000:102,103,104,105,106,107,108,109】
+    /**
+     * apply to rule_models, split into several rule models
      * */
     public String[] ruleModels() {
         if (StringUtils.isBlank(ruleModels)) return null;
@@ -35,8 +33,12 @@ public class StrategyEntity {
     }
 
     /**
-     * separate all
-     * @return return ruleWeightList
+     * acquire rule weight list
+     * format of rule_weight
+     * 【4000:102,103,104,105
+     * 5000:102,103,104,105,106,107
+     * 6000:102,103,104,105,106,107,108,109】
+     * @return ruleWeightList
      */
     public String getRuleWeight() {
         String[] ruleModels = this.ruleModels();

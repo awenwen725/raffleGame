@@ -1,4 +1,4 @@
-package com.awenwen.domain.strategy.service.rule;
+package com.awenwen.domain.strategy.service.rule.filter;
 
 import com.awenwen.domain.strategy.model.entity.RuleActionEntity;
 import com.awenwen.domain.strategy.model.entity.RuleMatterEntity;

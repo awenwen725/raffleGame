@@ -3,6 +3,7 @@ package com.awenwen.domain.strategy.service.rule.chain.factory;
 import com.awenwen.domain.strategy.model.entity.StrategyEntity;
 import com.awenwen.domain.strategy.repository.IStrategyRepository;
 import com.awenwen.domain.strategy.service.rule.chain.ILogicChain;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import java.util.Map;
  * @description factory class to manage responsibility chain
  * @create 2025/12/7 22:15
  */
+@Service
 public class DefaultChainFactory {
     private final Map<String, ILogicChain> logicChainGroup;
     protected IStrategyRepository repository;
