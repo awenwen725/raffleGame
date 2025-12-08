@@ -1,10 +1,13 @@
 package com.awenwen.domain.strategy.service.rule.chain;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author awenwen
  * @description
  * @create 2025/12/6 22:50
  */
+@Slf4j
 public abstract class AbstractLogicChain implements ILogicChain{
 
     private ILogicChain next;

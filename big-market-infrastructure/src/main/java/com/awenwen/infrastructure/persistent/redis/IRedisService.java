@@ -1,4 +1,4 @@
-package com.awenwen.infrastructure.redis;
+package com.awenwen.infrastructure.persistent.redis;
 
 import org.redisson.api.*;
 

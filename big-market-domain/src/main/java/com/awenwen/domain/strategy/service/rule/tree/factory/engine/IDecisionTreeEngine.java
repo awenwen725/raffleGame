@@ -8,6 +8,6 @@ import com.awenwen.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
  * @create 2025/12/8 12:42
  */
 public interface IDecisionTreeEngine {
-    DefaultTreeFactory.StrategyAwardData process(String userId, Long strategyId, Integer awardId);
+    DefaultTreeFactory.StrategyAwardVO process(String userId, Long strategyId, Integer awardId);
 
 }

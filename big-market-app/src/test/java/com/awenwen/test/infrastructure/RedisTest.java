@@ -1,6 +1,6 @@
 package com.awenwen.test.infrastructure;
 
-import com.awenwen.infrastructure.redis.IRedisService;
+import com.awenwen.infrastructure.persistent.redis.IRedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;

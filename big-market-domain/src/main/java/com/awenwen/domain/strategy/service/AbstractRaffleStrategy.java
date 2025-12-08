@@ -9,6 +9,7 @@ import com.awenwen.domain.strategy.repository.IStrategyRepository;
 import com.awenwen.domain.strategy.service.armory.IStrategyDispatch;
 import com.awenwen.domain.strategy.service.rule.chain.ILogicChain;
 import com.awenwen.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
+import com.awenwen.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
 import com.awenwen.types.enums.ResponseCode;
 import com.awenwen.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -27,12 +28,15 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
     // perform raffle
     protected IStrategyDispatch strategyDispatch;
     // perform logic chain
-    private final DefaultChainFactory defaultChainFactory;
+    protected final DefaultChainFactory defaultChainFactory;
+    // perform logic tree
+    protected final DefaultTreeFactory defaultTreeFactory;
 
-    public AbstractRaffleStrategy(IStrategyRepository repository, IStrategyDispatch strategyDispatch, DefaultChainFactory defaultChainFactory) {
+    public AbstractRaffleStrategy(IStrategyRepository repository, IStrategyDispatch strategyDispatch, DefaultChainFactory defaultChainFactory,  DefaultTreeFactory defaultTreeFactory) {
         this.repository = repository;
         this.strategyDispatch = strategyDispatch;
         this.defaultChainFactory = defaultChainFactory;
+        this.defaultTreeFactory = defaultTreeFactory;
     }
 
 
@@ -46,35 +50,43 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
                     ResponseCode.ILLEGAL_PARAMETER.getInfo());
         }
 
-        // 2. initial logic chain to filter before raffle
-        ILogicChain logicChain = defaultChainFactory.openLogicChain(strategyId);
-
-        // 3. perform logic chain, get award ID
-        Integer awardId = logicChain.logic(userId, strategyId);
-
-        // 4. query strategy applied in the middle or end of raffle process
-        StrategyAwardRuleModelVO strategyAwardRuleModelVO = repository.queryStrategyAwardRuleModelVO(strategyId, awardId);
-
-        // raffling
-        RuleActionEntity<RuleActionEntity.RaffleCenterEntity> ruleActionCenterEntity = this.doCheckRaffleCenterLogic(
-                RaffleFactorEntity
-                        .builder()
-                        .userId(userId)
-                        .strategyId(strategyId)
-                        .build(), strategyAwardRuleModelVO.raffleCenterRuleModelList());
-        // apply centre rule
-        if (RuleLogicCheckTypeVO.TAKE_OVER.getCode().equals(ruleActionCenterEntity.getCode())){
-            log.info("centre raffle: rule_luck_award, get default award due to no stocks");
+        // 2. perform logic chain
+        DefaultChainFactory.StrategyAwardVO chainStrategyAwardVO = raffleLogicChain(userId, strategyId);
+        log.info("Before Raffle, Logic Chain {} {} {} {}", userId, strategyId, chainStrategyAwardVO.getAwardId(), chainStrategyAwardVO.getLogicModel());
+        // return when perform default rule
+        if (!DefaultChainFactory.LogicModel.RULE_DEFAULT.getCode().equals(chainStrategyAwardVO.getLogicModel())) {
             return RaffleAwardEntity.builder()
-                    .awardDesc("entre raffle: rule_luck_award, get default award due to no stocks")
+                    .awardId(chainStrategyAwardVO.getAwardId())
                     .build();
         }
 
-        // 6. default method
+        // 3. perform Logic Tree
+        DefaultTreeFactory.StrategyAwardVO treeStrategyAwardVO = raffleLogicTree(userId, strategyId, chainStrategyAwardVO.getAwardId());
+        log.info("Centre raffle, Logic Tree, {} {} {} {}", userId, strategyId, treeStrategyAwardVO.getAwardId(), treeStrategyAwardVO.getAwardRuleValue());
+
+        // 4. return award
         return RaffleAwardEntity.builder()
-                .awardId(awardId)
+                .awardId(treeStrategyAwardVO.getAwardId())
+                .awardConfig(treeStrategyAwardVO.getAwardRuleValue())
                 .build();
     }
 
-    protected abstract RuleActionEntity<RuleActionEntity.RaffleCenterEntity> doCheckRaffleCenterLogic(RaffleFactorEntity raffleFactorEntity, String... logics);
+    /**
+     * abstract method, perform logic chain
+     *
+     * @param userId user ID
+     * @param strategyId strategy ID
+     * @return DefaultChainFactory.StrategyAwardVO: information of award after logic chain
+     */
+    public abstract DefaultChainFactory.StrategyAwardVO raffleLogicChain(String userId, Long strategyId) ;
+
+    /**
+     * abstract method, perform logic tree
+     *
+     * @param userId user ID
+     * @param strategyId strategy ID
+     * @param awardId award ID
+     * @return DefaultTreeFactory.StrategyAwardVO: information of final acquired award
+     */
+    public abstract DefaultTreeFactory.StrategyAwardVO raffleLogicTree(String userId, Long strategyId, Integer awardId);
 }

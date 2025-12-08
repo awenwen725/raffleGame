@@ -1,5 +1,7 @@
 package com.awenwen.domain.strategy.service.rule.chain;
 
+import com.awenwen.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
+
 /**
  * @author awenwen
  * @description interface to perform responsibility chain
@@ -13,5 +15,5 @@ public interface ILogicChain extends ILogicChainArmory{
      * @param strategyId strategy ID
      * @return award ID
      */
-    Integer logic(String userId, Long strategyId);
+    DefaultChainFactory.StrategyAwardVO logic(String userId, Long strategyId);
 }

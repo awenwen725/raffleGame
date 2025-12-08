@@ -3,6 +3,7 @@ package com.awenwen.domain.strategy.repository;
 import com.awenwen.domain.strategy.model.entity.StrategyAwardEntity;
 import com.awenwen.domain.strategy.model.entity.StrategyEntity;
 import com.awenwen.domain.strategy.model.entity.StrategyRuleEntity;
+import com.awenwen.domain.strategy.model.valobj.RuleTreeVO;
 import com.awenwen.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 
 import java.util.List;
@@ -34,4 +35,11 @@ public interface IStrategyRepository {
     String queryStrategyRuleValue(Long strategyId, String ruleModel);
 
     StrategyAwardRuleModelVO queryStrategyAwardRuleModelVO(Long strategyId, Integer awardId);
+
+    /**
+     * query Logic Tree according to tree ID
+     * @param treeId logic tree ID
+     * @return the root node of Logic Tree
+     */
+    RuleTreeVO queryRuleTreeVOByTreeId(String treeId);
 }

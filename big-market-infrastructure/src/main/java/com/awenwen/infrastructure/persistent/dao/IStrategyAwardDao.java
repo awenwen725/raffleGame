@@ -1,4 +1,4 @@
-package com.awenwen.infrastructure.dao;
+package com.awenwen.infrastructure.persistent.dao;
 
 /**
  * @author awenwen
@@ -6,7 +6,7 @@ package com.awenwen.infrastructure.dao;
  * @create 2025/11/13 22:25
  */
 
-import com.awenwen.infrastructure.dao.po.StrategyAward;
+import com.awenwen.infrastructure.persistent.po.StrategyAward;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

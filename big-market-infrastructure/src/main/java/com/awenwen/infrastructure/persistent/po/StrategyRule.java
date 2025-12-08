@@ -1,4 +1,4 @@
-package com.awenwen.infrastructure.dao.po;
+package com.awenwen.infrastructure.persistent.po;
 
 import lombok.Data;
 

@@ -3,6 +3,7 @@ package com.awenwen.domain.strategy.service.rule.chain.factory;
 import com.awenwen.domain.strategy.model.entity.StrategyEntity;
 import com.awenwen.domain.strategy.repository.IStrategyRepository;
 import com.awenwen.domain.strategy.service.rule.chain.ILogicChain;
+import lombok.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -45,6 +46,31 @@ public class DefaultChainFactory {
         // add default chain in the last
         current.appendNext(logicChainGroup.get("default"));
         return logicChain;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class StrategyAwardVO {
+        /** Award id */
+        private Integer awardId;
+        /**  before raffle rule*/
+        private String logicModel;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public enum LogicModel {
+
+        RULE_DEFAULT("rule_default", "Default Raffle"),
+        RULE_BLACKLIST("rule_blacklist", "Rule Blacklist Raffle"),
+        RULE_WEIGHT("rule_weight", "Rule Weight Raffle"),
+        ;
+
+        private final String code;
+        private final String info;
+
     }
 
 }

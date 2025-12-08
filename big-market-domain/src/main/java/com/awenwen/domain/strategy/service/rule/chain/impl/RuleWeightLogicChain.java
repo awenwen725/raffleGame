@@ -4,6 +4,7 @@ import com.awenwen.domain.strategy.repository.IStrategyRepository;
 import com.awenwen.domain.strategy.service.armory.IStrategyDispatch;
 import com.awenwen.domain.strategy.service.rule.chain.AbstractLogicChain;
 import com.awenwen.domain.strategy.service.rule.chain.ILogicChain;
+import com.awenwen.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
 import com.awenwen.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -25,20 +26,22 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
     @Resource
     protected IStrategyDispatch strategyDispatch;
 
-    public Long userScore;
+    // need to add operation after user domain finished
+    public Long userScore = 0L;
 
     /**
-     * Weight Chain
-     * 1. rule_weight format；4000:102,103,104,105 5000:102,103,104,105,106,107 6000:102,103,104,105,106,107,108,109
+     * Rule Weight Chain
+     * 1. rule_weight raw data format；4000:102,103,104,105 5000:102,103,104,105,106,107 6000:102,103,104,105,106,107,108,109
      * 2. parse format, find the strategy feats current user
      */
     @Override
-    public Integer logic(String userId, Long strategyId) {
-        log.info("Weight Chain: userId: {} strategyId: {} ruleModel: {}", userId, strategyId, ruleModel());
+    public DefaultChainFactory.StrategyAwardVO logic(String userId, Long strategyId) {
+        log.info("Logic Chain, Rule Weight, userId: {} strategyId: {} ruleModel: {}", userId, strategyId, ruleModel());
 
         String ruleValue = repository.queryStrategyRuleValue(strategyId, ruleModel());
 
-        // 1. parse 4000:102,103,104,105 into 4000 -> 4000:102,103,104,105
+        // 1. parse raw data, like: 4000:102,103,104,105
+        // into key-value form: 4000 -> 4000:102,103,104,105
         Map<Long, String> analyticalValueGroup = getAnalyticalValue(ruleValue);
         if (null == analyticalValueGroup || analyticalValueGroup.isEmpty()) {
             log.warn("rule Weight: warning no configuration of ruleValue userId: {} strategyId: {} ruleModel: {}", userId, strategyId, ruleModel());
@@ -59,24 +62,29 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
         // 3. perform raffle
         if (null != nextValue) {
             Integer awardId = strategyDispatch.getRandomAwardId(strategyId, analyticalValueGroup.get(nextValue));
-            log.info("weight Chain take over, userId: {} strategyId: {} ruleModel: {} awardId: {}", userId, strategyId, ruleModel(), awardId);
-            return awardId;
+            log.info("Logic Chain, Rule Weight take over, userId: {} strategyId: {} ruleModel: {} awardId: {}", userId, strategyId, ruleModel(), awardId);
+            return DefaultChainFactory.StrategyAwardVO.builder()
+                    .awardId(awardId)
+                    .logicModel(ruleModel())
+                    .build();
         }
 
-        // 5. passing to other chain
-        log.info("weight Chain allows pass, userId: {} strategyId: {} ruleModel: {}", userId, strategyId, ruleModel());
+        // 4. passing to other chain
+        log.info("Logic Chain, Rule Weight allows pass, userId: {} strategyId: {} ruleModel: {}", userId, strategyId, ruleModel());
         return next().logic(userId, strategyId);
     }
 
     @Override
     protected String ruleModel() {
-        return "rule_weight";
+        return DefaultChainFactory.LogicModel.RULE_WEIGHT.getCode();
     }
 
     /**
      *  split several weight rules
-     * @param ruleValue
-     * @return
+     * @param ruleValue raw data from database
+     * @return weight rule map
+     * key: boundary score
+     * value: available award ID List
      */
 
     private Map<Long, String> getAnalyticalValue(String ruleValue) {

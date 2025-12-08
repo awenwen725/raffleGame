@@ -2,6 +2,7 @@ package com.awenwen.domain.strategy.service.rule.chain.impl;
 
 import com.awenwen.domain.strategy.service.armory.IStrategyDispatch;
 import com.awenwen.domain.strategy.service.rule.chain.AbstractLogicChain;
+import com.awenwen.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -21,14 +22,17 @@ public class DefaultLogicChain extends AbstractLogicChain {
     protected IStrategyDispatch strategyDispatch;
 
     @Override
-    public Integer logic(String userId, Long strategyId) {
+    public DefaultChainFactory.StrategyAwardVO logic(String userId, Long strategyId) {
         Integer awardId = strategyDispatch.getRandomAwardId(strategyId);
         log.info("Default Chain take over, userId: {} strategyId: {} ruleModel: {} awardId: {}", userId, strategyId, ruleModel(), awardId);
-        return awardId;
+        return  DefaultChainFactory.StrategyAwardVO.builder()
+                .awardId(awardId)
+                .logicModel(ruleModel())
+                .build();
     }
 
     @Override
     protected String ruleModel() {
-        return "default";
+        return DefaultChainFactory.LogicModel.RULE_DEFAULT.getCode();
     }
 }

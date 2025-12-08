@@ -1,6 +1,6 @@
-package com.awenwen.infrastructure.dao;
+package com.awenwen.infrastructure.persistent.dao;
 
-import com.awenwen.infrastructure.dao.po.StrategyRule;
+import com.awenwen.infrastructure.persistent.po.StrategyRule;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
