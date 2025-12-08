@@ -1,25 +1,17 @@
 package com.awenwen.domain.strategy.service.raffle;
 
-import com.awenwen.domain.strategy.model.entity.RaffleFactorEntity;
-import com.awenwen.domain.strategy.model.entity.RuleActionEntity;
-import com.awenwen.domain.strategy.model.entity.RuleMatterEntity;
-import com.awenwen.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
 import com.awenwen.domain.strategy.model.valobj.RuleTreeVO;
 import com.awenwen.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 import com.awenwen.domain.strategy.repository.IStrategyRepository;
 import com.awenwen.domain.strategy.service.armory.IStrategyDispatch;
 import com.awenwen.domain.strategy.service.AbstractRaffleStrategy;
 import com.awenwen.domain.strategy.service.rule.chain.ILogicChain;
-import com.awenwen.domain.strategy.service.rule.filter.ILogicFilter;
 import com.awenwen.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
-import com.awenwen.domain.strategy.service.rule.filter.factory.DefaultLogicFactory;
 import com.awenwen.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
 import com.awenwen.domain.strategy.service.rule.tree.factory.engine.IDecisionTreeEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.util.Map;
 
 /**
  * @author awenwen
