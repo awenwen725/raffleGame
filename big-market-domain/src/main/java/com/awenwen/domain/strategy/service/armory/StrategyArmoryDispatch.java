@@ -18,7 +18,7 @@ import java.util.*;
 
 /**
  * @author awenwen
- * @description
+ * @description the implementation of dispatch and armory
  * @create 2025/11/15 23:04
  */
 @Slf4j
@@ -127,5 +127,8 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
         return repository.getStrategyAwardAssemble(key, new SecureRandom().nextInt(rateRange));
     }
 
-
+    @Override
+    public Boolean subtractionAwardStock(Long strategyId, Integer awardId) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + strategyId + Constants.UNDERLINE + awardId;
+        return repository.subtractionAwardStock(cacheKey);    }
 }

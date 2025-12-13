@@ -10,6 +10,9 @@ import com.awenwen.infrastructure.persistent.po.*;
 import com.awenwen.infrastructure.persistent.redis.IRedisService;
 import com.awenwen.types.common.Constants;
 import com.awenwen.types.exception.AppException;
+import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBlockingQueue;
+import org.redisson.api.RDelayedQueue;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.awenwen.types.enums.ResponseCode.UN_ASSEMBLED_STRATEGY_ARMORY;
 
@@ -25,6 +29,7 @@ import static com.awenwen.types.enums.ResponseCode.UN_ASSEMBLED_STRATEGY_ARMORY;
  * @description strategy repository implements
  * @create 2025/11/15 23:08
  */
+@Slf4j
 @Repository
 public class StrategyRepository implements IStrategyRepository {
     @Resource
@@ -237,6 +242,34 @@ public class StrategyRepository implements IStrategyRepository {
 
         redisService.setValue(cacheKey, ruleTreeVODB);
         return ruleTreeVODB;
+    }
+
+    @Override
+    public Boolean subtractionAwardStock(String cacheKey) {
+        long surplus = redisService.decr(cacheKey);
+        if (surplus < 0) {
+            redisService.setValue(cacheKey, 0);
+            return false;
+        }
+        // add lock as a log, prevent over selling from data rollback
+        String lockKey = cacheKey + Constants.UNDERLINE + surplus;
+        Boolean lock = redisService.setNx(lockKey);
+        if (!lock) {
+            log.info("strategy lock adding failure {}", lockKey);
+        }
+        return lock;
+    }
+
+    /**
+     * currently implement is redis delay queue
+     * @param strategyAwardStockKeyVO user information object
+     */
+    @Override
+    public void awardStockConsumeSendQueue(StrategyAwardStockKeyVO strategyAwardStockKeyVO) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUERY_KEY;
+        RBlockingQueue<StrategyAwardStockKeyVO> blockingQueue = redisService.getBlockingQueue(cacheKey);
+        RDelayedQueue<StrategyAwardStockKeyVO> delayedQueue = redisService.getDelayedQueue(blockingQueue);
+        delayedQueue.offer(strategyAwardStockKeyVO, 3, TimeUnit.SECONDS);
     }
 
 

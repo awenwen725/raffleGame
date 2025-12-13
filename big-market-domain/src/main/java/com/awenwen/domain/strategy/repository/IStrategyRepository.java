@@ -5,6 +5,7 @@ import com.awenwen.domain.strategy.model.entity.StrategyEntity;
 import com.awenwen.domain.strategy.model.entity.StrategyRuleEntity;
 import com.awenwen.domain.strategy.model.valobj.RuleTreeVO;
 import com.awenwen.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
+import com.awenwen.domain.strategy.model.valobj.StrategyAwardStockKeyVO;
 
 import java.util.List;
 import java.util.Map;
@@ -42,4 +43,19 @@ public interface IStrategyRepository {
      * @return the root node of Logic Tree
      */
     RuleTreeVO queryRuleTreeVOByTreeId(String treeId);
+
+    /**
+     * subtract stock in cache
+     * @param cacheKey cache key
+     * @return  subtraction result
+     */
+    Boolean subtractionAwardStock(String cacheKey);
+
+
+    /**
+     * add order information into message queue
+     * @param strategyAwardStockKeyVO user information object
+     */
+    void awardStockConsumeSendQueue(StrategyAwardStockKeyVO strategyAwardStockKeyVO);
+
 }

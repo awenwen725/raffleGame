@@ -2,7 +2,7 @@ package com.awenwen.domain.strategy.service.armory;
 
 /**
  * @author awenwen
- * @description
+ * @description Interface of performing raffle
  * @create 2025/11/16 22:12
  */
 public interface IStrategyDispatch {
@@ -33,4 +33,12 @@ public interface IStrategyDispatch {
      * @return 抽奖结果
      */
     Integer getRandomAwardId(String key);
+
+    /**
+     * subtract stock by award ID and strategy ID
+     * @param strategyId strategy ID
+     * @param awardId   Award ID
+     * @return substraction result
+     */
+    Boolean subtractionAwardStock(Long strategyId, Integer awardId);
 }

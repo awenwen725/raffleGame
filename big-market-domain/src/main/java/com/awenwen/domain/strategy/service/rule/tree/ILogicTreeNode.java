@@ -8,5 +8,5 @@ import com.awenwen.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
  * @create 2025/12/8 12:41
  */
 public interface ILogicTreeNode {
-    DefaultTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Integer awardId);
+    DefaultTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Integer awardId, String ruleValue);
 }
