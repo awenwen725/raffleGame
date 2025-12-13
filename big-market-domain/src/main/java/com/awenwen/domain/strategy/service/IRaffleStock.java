@@ -4,12 +4,12 @@ import com.awenwen.domain.strategy.model.valobj.StrategyAwardStockKeyVO;
 
 /**
  * @author awenwen
- * @description
+ * @description interface of consumer updating database about stock substraction
  * @create 2025/12/13 14:51
  */
 public interface IRaffleStock {
     /**
-     * acquire message queue of subtract stock
+     * acquire data from stock substraction message queue
      * @return information object used in subtract stock
      * @throws InterruptedException case the queue is null
      */

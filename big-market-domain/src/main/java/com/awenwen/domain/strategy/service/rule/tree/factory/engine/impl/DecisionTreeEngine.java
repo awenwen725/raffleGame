@@ -56,8 +56,6 @@ public class DecisionTreeEngine implements IDecisionTreeEngine {
             nextNode = nextNode(ruleLogicCheckTypeVO.getCode(), ruleTreeNode.getTreeNodeLineVOList());
             ruleTreeNode = treeNodeMap.get(nextNode);
         }
-
-
         return strategyAwardData;
     }
 
@@ -68,7 +66,7 @@ public class DecisionTreeEngine implements IDecisionTreeEngine {
                 return nodeLine.getRuleNodeTo();
             }
         }
-        throw new RuntimeException("Logic Tree Engine，nextNode error，next executable node not found！");
+        return null;
     }
 
     public boolean decisionLogic(String matterValue, RuleTreeNodeLineVO nodeLine) {

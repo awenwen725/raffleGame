@@ -1,4 +1,4 @@
-package com.awenwen.api.response;
+package com.awenwen.types.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,16 +7,19 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * @author awenwen
+ * @description object for http response
+ * @create 2025/12/13 15:25
+ */
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Response<T> implements Serializable {
 
-    private static final long serialVersionUID = 7000723935764546321L;
-
     private String code;
     private String info;
     private T data;
-
 }

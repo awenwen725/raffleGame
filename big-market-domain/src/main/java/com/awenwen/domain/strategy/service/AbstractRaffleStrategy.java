@@ -2,12 +2,8 @@ package com.awenwen.domain.strategy.service;
 
 import com.awenwen.domain.strategy.model.entity.RaffleAwardEntity;
 import com.awenwen.domain.strategy.model.entity.RaffleFactorEntity;
-import com.awenwen.domain.strategy.model.entity.RuleActionEntity;
-import com.awenwen.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
-import com.awenwen.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 import com.awenwen.domain.strategy.repository.IStrategyRepository;
 import com.awenwen.domain.strategy.service.armory.IStrategyDispatch;
-import com.awenwen.domain.strategy.service.rule.chain.ILogicChain;
 import com.awenwen.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
 import com.awenwen.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
 import com.awenwen.types.enums.ResponseCode;
@@ -21,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
  * @create 2025/11/18 15:37
  */
 @Slf4j
-public abstract class AbstractRaffleStrategy implements IRaffleStrategy, IRaffleStock {
+public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
     /** constructor injection */
     // operation with database
     protected IStrategyRepository repository;
