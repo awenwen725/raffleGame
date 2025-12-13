@@ -16,10 +16,7 @@ import com.awenwen.types.enums.ResponseCode;
 import com.awenwen.types.exception.AppException;
 import com.awenwen.types.model.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +52,7 @@ public class RaffleController implements IRaffleService {
      */
     @RequestMapping(value = "strategy_armory", method = RequestMethod.GET)
     @Override
-    public Response<Boolean> strategyArmory(Long strategyId) {
+    public Response<Boolean> strategyArmory(@RequestParam Long strategyId) {
         try {
             log.info("Strategy Assemble start, strategyId：{}", strategyId);
             boolean armoryStatus = strategyArmory.assembleLotteryStrategy(strategyId);
@@ -81,8 +78,9 @@ public class RaffleController implements IRaffleService {
      * @param requestDTO request DTO
      * @return award list
      */
+    @RequestMapping(value = "query_raffle_award_list", method = RequestMethod.POST)
     @Override
-    public Response<List<RaffleAwardListResponseDTO>> queryRaffleAwardList(RaffleAwardListRequestDTO requestDTO) {
+    public Response<List<RaffleAwardListResponseDTO>> queryRaffleAwardList(@RequestBody RaffleAwardListRequestDTO requestDTO) {
         try {
             log.info("Query Raffle Strategy Award List start, strategyId：{}", requestDTO.getStrategyId());
             List<StrategyAwardEntity> strategyAwardEntities = raffleAward.queryRaffleStrategyAwardList(requestDTO.getStrategyId());
@@ -117,8 +115,9 @@ public class RaffleController implements IRaffleService {
      * @param requestDTO request DTO
      * @return award information
      */
+    @RequestMapping(value = "random_raffle", method = RequestMethod.POST)
     @Override
-    public Response<RaffleResponseDTO> randomRaffle(RaffleRequestDTO requestDTO) {
+    public Response<RaffleResponseDTO> randomRaffle(@RequestBody RaffleRequestDTO requestDTO) {
         try {
             log.info("Raffle process starts, strategyId：{}", requestDTO.getStrategyId());
             // user ID service not accomplished

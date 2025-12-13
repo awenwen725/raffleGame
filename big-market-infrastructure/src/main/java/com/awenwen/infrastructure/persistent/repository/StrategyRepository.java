@@ -123,7 +123,7 @@ public class StrategyRepository implements IStrategyRepository {
 
     @Override
     public Integer getStrategyAwardAssemble(String key, int rateKey) {
-        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_LIST_KEY + key;
+        String cacheKey = Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key;
         if (!redisService.isExists(cacheKey)) {
             throw new AppException(UN_ASSEMBLED_STRATEGY_ARMORY.getCode(), cacheKey + Constants.COLON + UN_ASSEMBLED_STRATEGY_ARMORY.getInfo());
         }
@@ -288,6 +288,12 @@ public class StrategyRepository implements IStrategyRepository {
         String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUERY_KEY;
         RBlockingQueue<StrategyAwardStockKeyVO> destinationQueue = redisService.getBlockingQueue(cacheKey);
         return destinationQueue.poll();
+    }
+
+    @Override
+    public void cacheStrategyAwardCount(String cacheKey, Integer awardCount) {
+        if (redisService.isExists(cacheKey)) return;
+        redisService.setAtomicLong(cacheKey, awardCount);
     }
 
 

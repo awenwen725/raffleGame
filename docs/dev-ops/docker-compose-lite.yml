@@ -1,0 +1,49 @@
+# command line
+# start up
+# docker-compose -f ./docs/dev-ops/docker-compose-lite.yml up -d
+# close
+# docker-compose -f ./docs/dev-ops/docker-compose-lite.yml down
+
+services:
+  # MySQL 8.0
+  mysql:
+    image: mysql:8.0
+    container_name: big-market-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root  # 对应 yml 里的密码
+      TZ: Asia/Shanghai
+    volumes:
+      # 挂载我们刚才做好的合并 SQL，Docker 启动时会自动执行
+      - ./environment/mysql/sql/:/docker-entrypoint-initdb.d/
+      - ./environment/mysql/my.cnf:/etc/mysql/conf.d/mysql.cnf
+    command: --default-authentication-plugin=mysql_native_password
+
+  # Redis
+  redis:
+    image: redis:6.2
+    container_name: big-market-redis
+    ports:
+      - "6379:6379"
+
+#  # RabbitMQ (带管理界面)
+#  rabbitmq:
+#    image: rabbitmq:3.12-management
+#    container_name: big-market-rabbitmq
+#    ports:
+#      - "5672:5672"   # 应用连接端口
+#      - "15672:15672" # 管理界面端口
+#    environment:
+#      RABBITMQ_DEFAULT_USER: guest
+#      RABBITMQ_DEFAULT_PASS: guest
+
+#  big-market-front:
+#    build:
+#      context: ../../../big-market-front  # 指向你前端代码的文件夹路径
+#      dockerfile: Dockerfile
+#    container_name: big-market-front
+#    ports:
+#      - "3000:3000"
+#    environment:
+#      - API_HOST_URL=http://host.docker.internal:8091 # 指向宿主机后端

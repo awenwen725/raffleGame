@@ -33,9 +33,9 @@
         ORDER BY sort ASC;
     </select>
 
-    <select id="queryStrategyAwardRuleModels" resultMap="java.lang.String" parameterType="com.awenwen.infrastructure.persistent.po.StrategyAward">
+    <select id="queryStrategyAwardRuleModels" resultType="java.lang.String" parameterType="com.awenwen.infrastructure.persistent.po.StrategyAward">
         SELECT
-            rule_model
+            rule_models
         FROM strategy_award
         WHERE strategy_id = #{strategyId}
         AND award_id = #{awardId};

@@ -21,8 +21,8 @@ public class DefaultTreeFactory {
     /** constructor injection*/
     private final Map<String, ILogicTreeNode> logicTreeNodeGroup;
 
-    public DefaultTreeFactory() {
-        this.logicTreeNodeGroup = new HashMap<>();
+    public DefaultTreeFactory(Map<String, ILogicTreeNode> logicTreeNodeGroup) {
+        this.logicTreeNodeGroup = logicTreeNodeGroup;
     }
 
     public IDecisionTreeEngine openLogicTree(RuleTreeVO ruleTreeVO) {

@@ -61,4 +61,6 @@ public interface IStrategyRepository {
     void updateStrategyAwardStock(Long strategyId, Integer awardId);
 
     StrategyAwardStockKeyVO takeQueueValue() throws InterruptedException;
+
+    void cacheStrategyAwardCount(String cacheKey, Integer awardCount);
 }
