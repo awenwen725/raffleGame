@@ -2,6 +2,7 @@ package com.awenwen.domain.strategy.service.raffle;
 
 import com.awenwen.domain.strategy.model.valobj.RuleTreeVO;
 import com.awenwen.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
+import com.awenwen.domain.strategy.model.valobj.StrategyAwardStockKeyVO;
 import com.awenwen.domain.strategy.repository.IStrategyRepository;
 import com.awenwen.domain.strategy.service.armory.IStrategyDispatch;
 import com.awenwen.domain.strategy.service.AbstractRaffleStrategy;
@@ -46,4 +47,13 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy {
         return treeEngine.process(userId, strategyId, awardId);
     }
 
+    @Override
+    public StrategyAwardStockKeyVO takeQueueValue() throws InterruptedException {
+        return repository.takeQueueValue();
+    }
+
+    @Override
+    public void updateStrategyAwardStock(Long strategyId, Integer awardId) {
+        repository.updateStrategyAwardStock(strategyId, awardId);
+    }
 }
