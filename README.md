@@ -62,6 +62,8 @@ Please execute the SQL scripts located in the `/docs/sql` directory to initializ
 - `strategy`, `strategy_rule`, `strategy_award`: Strategy-related tables.
 - `raffle_activity`, `raffle_activity_account`: Activity and account tables.
 
+**Highly recommend to launch SQL with docker**, the initial files have already configured in Docker-Compile file.
+
 ### 2. Configuration
 
 Modify `big-market-app/src/main/resources/application.yml`:
@@ -103,8 +105,8 @@ curl -X POST http://localhost:8091/api/v1/raffle/strategy/random_raffle \
     "strategyId": 10001
 }'
 ```
-### 5. Database and Redis Launched by Docker
-docker compose file has already configured mysql and redis.\
+### 5. Database and Redis Launched by DockerFile
+Docker compose file has already configured mysql and redis.\
 The project can be launched by docker file `docs/dev-ops/docker-compose-lite.yml` easily.
 ```bash
 # start up, in the project root path
