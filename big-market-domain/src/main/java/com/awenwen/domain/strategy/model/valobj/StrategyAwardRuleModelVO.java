@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * @author awenwen
- * @description query from database, value object indicating strategy centre or after raffle
+ * @description a value object used to store ruleModels, when Logic tree is performing
  * @create 2025/12/6 19:10
  */
 @Getter

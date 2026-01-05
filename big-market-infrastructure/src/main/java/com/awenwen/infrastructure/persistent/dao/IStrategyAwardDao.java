@@ -2,7 +2,7 @@ package com.awenwen.infrastructure.persistent.dao;
 
 /**
  * @author awenwen
- * @description 策略奖品的明细配置 概率 规则
+ * @description Strategy Award Dao
  * @create 2025/11/13 22:25
  */
 

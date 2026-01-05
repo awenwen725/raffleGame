@@ -30,7 +30,7 @@ public class StrategyAwardEntity {
     private Integer awardCount;
     /** award remain stock */
     private Integer awardCountSurplus;
-    /** rate */
+    /** rate list */
     private BigDecimal awardRate;
     /** sort */
     private Integer sort;

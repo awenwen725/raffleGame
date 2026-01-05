@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * @author awenwen
- * @description rule configured in certain strategy, used in Logic Chain before raffle performed
+ * @description the rule configured in certain strategy, used when strategy is loading
  * @create 2025/11/17 21:25
  */
 @Data

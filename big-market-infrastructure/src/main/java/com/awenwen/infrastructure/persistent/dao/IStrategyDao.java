@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * @author awenwen
- * @description Award gotten Strategy
+ * @description Strategy DAO
  * @create 2025/11/13 22:25
  */
 @Mapper

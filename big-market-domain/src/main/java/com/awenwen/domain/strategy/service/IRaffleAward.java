@@ -10,8 +10,6 @@ import java.util.List;
  * @create 2025/12/13 18:31
  */
 public interface IRaffleAward {
-
-
     /**
      * return Award list in a strategy
      * @param strategyId strategy ID

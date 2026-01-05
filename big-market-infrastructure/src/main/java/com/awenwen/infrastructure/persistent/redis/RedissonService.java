@@ -8,7 +8,7 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Redis 服务 - Redisson
+ * Redis service - Redisson
  *
  * @author Fuzhengwei bugstack.cn @小傅哥
  */

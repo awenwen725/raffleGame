@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author awenwen
- * @description
+ * @description information object used when subtracting stock
  * @create 2025/12/12 15:51
  */
 

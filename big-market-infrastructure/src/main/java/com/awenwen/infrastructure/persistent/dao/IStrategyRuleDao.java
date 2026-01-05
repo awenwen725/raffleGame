@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * @author awenwen
- * @description 抽奖策略规则
+ * @description strategy rule DAO
  * @create 2025/11/13 22:26
  */
 @Mapper
