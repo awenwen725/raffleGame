@@ -13,8 +13,7 @@ import java.util.Map;
 
 /**
  * @author awenwen
- * @description according to schema StrategyRule
- * describe the precise information of rule
+ * @description rule configured in certain strategy, used in Logic Chain before raffle performed
  * @create 2025/11/17 21:25
  */
 @Data
@@ -22,22 +21,27 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StrategyRuleEntity {
-    /** 抽奖策略ID */
+    /** strategy ID */
     private Long strategyId;
-    /** 抽奖奖品ID【规则类型为策略，则不需要奖品ID】 */
+    /** award ID, if it is strategy rule, it will be NULL*/
     private Integer awardId;
-    /** 抽象规则类型；1-策略规则、2-奖品规则 */
+    /**  deprecated */
     private Integer ruleType;
-    /** 抽奖规则类型【rule_random - 随机值计算、rule_lock - 抽奖几次后解锁、rule_luck_award - 幸运奖(兜底奖品)】 */
+    /** rule name [rule_blacklist, rule_weight, rule_default] */
     private String ruleModel;
-    /** 抽奖规则比值 */
+    /** value of rule name
+     * rule_blacklist - blocked user ID list
+     * rule_weight - award ID list according to user's points
+     * rule_default - default award ID list
+     **/
     private String ruleValue;
-    /** 抽奖规则描述 */
+    /** rule description */
     private String ruleDesc;
 
     /**
-     * 获取权重值
-     * 数据案例；4000:102,103,104,105 5000:102,103,104,105,106,107 6000:102,103,104,105,106,107,108,109
+     * ONLY AVAILABLE while ruleModel is rule_weight
+     * acquire award list according to different user's point
+     * ruleValue form of rule_weight eg；4000:102,103,104,105 5000:102,103,104,105,106,107 6000:102,103,104,105,106,107,108,109
      */
     public Map<String, List<Integer>> getRuleWeightValues() {
         if (!"rule_weight".equals(ruleModel)) {

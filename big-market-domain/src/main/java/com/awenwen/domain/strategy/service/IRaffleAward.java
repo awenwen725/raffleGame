@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * @author awenwen
- * @description
+ * @description query award list in a strategy
  * @create 2025/12/13 18:31
  */
 public interface IRaffleAward {

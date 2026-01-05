@@ -32,20 +32,20 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
 
     @Override
     public boolean assembleLotteryStrategy(Long strategyId) {
-        // 1. 查询策略配置
+        // 1. query
         List<StrategyAwardEntity> strategyAwardEntities = repository.queryStrategyAwardList(strategyId);
 
-        // 2 缓存奖品库存【用于decr扣减库存使用】
+        // 2 cache award stock
         for (StrategyAwardEntity strategyAward : strategyAwardEntities) {
             Integer awardId = strategyAward.getAwardId();
             Integer awardCount = strategyAward.getAwardCount();
             cacheStrategyAwardCount(strategyId, awardId, awardCount);
         }
 
-        // 3.1 默认装配配置【全量抽奖概率】
+        // 3.1 cache default strategy
         assembleLotteryStrategy(String.valueOf(strategyId), strategyAwardEntities);
 
-        // 3.2 权重策略配置 - 适用于 rule_weight 权重规则配置【4000:102,103,104,105 5000:102,103,104,105,106,107 6000:102,103,104,105,106,107,108,109】
+        // 3.2 cache strategies for strategy  - available for rule_weight eg:[4000:102,103,104,105 5000:102,103,104,105,106,107 6000:102,103,104,105,106,107,108,109]
         StrategyEntity strategyEntity = repository.queryStrategyEntityByStrategyId(strategyId);
         String ruleWeight = strategyEntity.getRuleWeight();
         if (null == ruleWeight) return true;

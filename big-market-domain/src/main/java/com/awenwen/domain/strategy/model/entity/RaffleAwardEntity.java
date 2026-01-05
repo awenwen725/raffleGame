@@ -7,17 +7,18 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author awenwen
- * @description award entity
+ * @description information of won award
  * @create 2025/11/18 15:35
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RaffleAwardEntity {    /** 奖品ID */
+public class RaffleAwardEntity {
+    /** award ID */
     private Integer awardId;
-    /** 奖品配置信息 */
+    /** award description */
     private String awardConfig;
-    /** 奖品顺序号 */
+    /** number */
     private Integer sort;
 }

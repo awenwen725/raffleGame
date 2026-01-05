@@ -48,7 +48,7 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy implements IRa
         }
         RuleTreeVO ruleTreeVO = repository.queryRuleTreeVOByTreeId(strategyAwardRuleModelVO.getRuleModels());
         if (null == ruleTreeVO) {
-            throw new RuntimeException("存在抽奖策略配置的规则模型 Key，未在库表 rule_tree、rule_tree_node、rule_tree_line 配置对应的规则树信息 " + strategyAwardRuleModelVO.getRuleModels());
+            throw new RuntimeException("Raffle Strategy exists，NOT FOUND configurations of rule_tree、rule_tree_node、rule_tree_line in Database" + strategyAwardRuleModelVO.getRuleModels());
         }
         IDecisionTreeEngine treeEngine = defaultTreeFactory.openLogicTree(ruleTreeVO);
         return treeEngine.process(userId, strategyId, awardId);

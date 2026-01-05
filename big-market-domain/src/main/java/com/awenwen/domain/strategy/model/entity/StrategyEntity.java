@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author awenwen
- * @description raffle or award rules used in strategy
+ * @description strategy information
  * @create 2025/11/16 10:59
  */
 @Data
@@ -17,11 +17,11 @@ import org.apache.commons.lang3.StringUtils;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StrategyEntity {
-    /** 抽奖策略ID */
+    /** strategy ID */
     private Long strategyId;
-    /** 抽奖策略描述 */
+    /** strategy Description */
     private String strategyDesc;
-    /** 规则模型，rule配置的模型同步到此表，便于使用*/
+    /** rule model in strategy */
     private String ruleModels;
 
     /**

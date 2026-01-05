@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author awenwen
- * @description awardEntity
+ * @description award Entity
  * @create 2025/11/16 15:33
  */
 
@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AwardEntity {
-    /** 用户ID */
+    /** user ID */
     private String userId;
-    /** 奖品ID */
+    /** award ID */
     private Integer awardId;
 }

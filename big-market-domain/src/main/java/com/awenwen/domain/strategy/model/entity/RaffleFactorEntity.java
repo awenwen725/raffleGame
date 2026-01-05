@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  * @author awenwen
- * @description Raffle Factor
+ * @description parameters for raffle
  * @create 2025/11/18 15:37
  */
 
@@ -18,10 +18,10 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RaffleFactorEntity {
-    /** 用户ID */
+    /** user ID */
     private String userId;
-    /** 策略ID */
+    /** strategy ID */
     private Long strategyId;
-
+    /** award ID*/
     public Integer awardId;
 }

@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 /**
  * @author awenwen
- * @description
+ * @description detail information of award configured in certain strategy
  * @create 2025/11/16 15:34
  */
 
@@ -18,22 +18,22 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StrategyAwardEntity {
-    /** 抽奖策略ID */
+    /** strategy ID */
     private Long strategyId;
-    /** 抽奖奖品ID - 内部流转使用 */
+    /** award ID */
     private Integer awardId;
-    /** 抽奖奖品标题 */
+    /** award title */
     private String awardTitle;
-    /** 抽奖奖品副标题 */
+    /** award subtitle */
     private String awardSubtitle;
-    /** 奖品库存总量 */
+    /** award total stock */
     private Integer awardCount;
-    /** 奖品库存剩余 */
+    /** award remain stock */
     private Integer awardCountSurplus;
-    /** 奖品中奖概率 */
+    /** rate */
     private BigDecimal awardRate;
-    /** 排序 */
+    /** sort */
     private Integer sort;
-    /** 规则模型，rule配置的模型同步到此表，便于使用 */
+    /** rule model */
     private String ruleModels;
 }
